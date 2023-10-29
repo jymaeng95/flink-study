@@ -19,6 +19,8 @@ public class TweetFilterFunction extends RichFilterFunction<Tweet> {
     @Override
     public boolean filter(Tweet tweet) throws Exception {
         filterCounter.inc();
+        tweet.setTimestamp(System.currentTimeMillis());
+
         return !tweet.isRetweet();
     }
 }

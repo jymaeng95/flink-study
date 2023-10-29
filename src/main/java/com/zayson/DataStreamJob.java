@@ -19,11 +19,12 @@ public class DataStreamJob {
          * Source -> Filter -> Map -> FlatMap -> Sink
          * Each Function Get Metrics
          */
-        DataStreamSource<Tweet> tweetStream = env.fromSource(
-                TweetSource.createTweetSource(),
-                WatermarkStrategy.noWatermarks(),
-                "Tweet Generator Source"
-        );
+//        DataStreamSource<Tweet> tweetStream = env.fromSource(
+//                TweetSource.createUnboundedTweetSource(),
+//                WatermarkStrategy.noWatermarks(),
+//                "Tweet Generator Source"
+//        );
+        DataStreamSource<Tweet> tweetStream = env.fromCollection(TweetSource.createBoundedTweetSource());
         tweetStream.print("===========");
 
         // Prometheus Enable

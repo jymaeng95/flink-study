@@ -7,6 +7,7 @@ import org.apache.flink.connector.datagen.source.DataGeneratorSource;
 import org.apache.flink.connector.datagen.source.GeneratorFunction;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,7 +17,7 @@ public class TweetSource {
     private static final List<Boolean> tweetStatus = List.of(true, false);
 
     private static final double RECORDS_PER_SECONDS = 3;
-    public static DataGeneratorSource<Tweet> createTweetSource() {
+    public static DataGeneratorSource<Tweet> createUnboundedTweetSource() {
         GeneratorFunction<Long, Tweet> tweetGenerator = index -> Tweet.builder()
                 .id(Instant.now().getEpochSecond())
                 .source(randomData(sources))
@@ -32,6 +33,24 @@ public class TweetSource {
                 RateLimiterStrategy.perSecond(RECORDS_PER_SECONDS),
                 GenericTypeInfo.of(Tweet.class)
         );
+    }
+
+    public static List<Tweet> createBoundedTweetSource() {
+        List<Tweet> boundedTweetList = new ArrayList<>();
+        for (int size = 0; size < 100; size++) {
+            boundedTweetList.add(
+                    Tweet.builder()
+                            .id(Instant.now().getEpochSecond())
+                            .source(randomData(sources))
+                            .text(randomData(texts))
+                            .createdAt(Instant.now().getEpochSecond())
+                            .modifiedAt(Instant.now().getEpochSecond())
+                            .isRetweet(randomData(tweetStatus))
+                            .build()
+            );
+        }
+
+        return boundedTweetList;
     }
 
     private static <T> T randomData(List<T> targets) {

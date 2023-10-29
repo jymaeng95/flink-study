@@ -16,4 +16,5 @@ public class Tweet {
     private Long createdAt;
     private Long modifiedAt;
     private boolean isRetweet;
+    private Long timestamp;
 }
